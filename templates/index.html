@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</head>
+<body>
+	<div class="wrapper" style="align-items: center; justify-content: center; background-color: sienna; width: 300px; height: 300px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column;">
+		<div style="display: inline-block; font-size: 25px;">
+			sensor 1 : <span id="one">0</span>
+		</div>
+		<div id="sensor-2" style="display: inline-block; font-size: 25px;" >
+			sensor 2 : <span id="two">0</span>
+		</div>
+		<div style="font-size: 25px; margin-top: 10px;">
+			time : <span id="time"> 00:00:00 WIB</span>
+		</div>
+	</div>
+</body>
+	<script>
+		var sensor1 = document.getElementById("one")
+		var sensor2 = document.getElementById("two")
+		var time = document.getElementById("time")
+
+		var socket = io.connect(`http://${document.domain}:${location.port}`)
+		socket.on('connect', () => {
+			socket.emit('status', 'i am connect')
+		});
+
+		socket.on('data-receiver', (data) => {
+			sensor1.innerHTML = `${data[0]} Celcius`
+			sensor2.innerHTML = `${data[1]} Celcius`
+			time.innerHTML = `${data[2]} WIB`
+			socket.emit('data-access-new', data)
+		});
+
+	</script>
+
+</html>
